@@ -1,0 +1,12 @@
+br\edu\ibmec\bigdata\controller\ClienteController.class
+br\edu\ibmec\bigdata\exceptions\ValidationError.class
+br\edu\ibmec\bigdata\exceptions\ValidationMessageError.class
+br\edu\ibmec\bigdata\repository\EnderecoRepository.class
+br\edu\ibmec\bigdata\controller\EnderecoController.class
+br\edu\ibmec\bigdata\model\Endereco.class
+br\edu\ibmec\bigdata\model\Cliente.class
+br\edu\ibmec\bigdata\repository\ClienteRepository.class
+br\edu\ibmec\bigdata\service\EnderecoService.class
+br\edu\ibmec\bigdata\exceptions\ValidationErrorInterceptor.class
+br\edu\ibmec\bigdata\BigdataApplication.class
+br\edu\ibmec\bigdata\service\ClienteService.class
