@@ -1,7 +1,11 @@
 package br.edu.ibmec.bigdata.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,10 +20,30 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/enderecos")
 public class EnderecoController {
-    private final EnderecoService enderecoService;
+    @Autowired
+    private EnderecoService enderecoService;
     
     public EnderecoController(EnderecoService enderecoService) {
         this.enderecoService = enderecoService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Endereco>> getAllEnderecos() {
+        List<Endereco> enderecos = enderecoService.buscarTodosEnderecos();
+        if (enderecos.isEmpty()) {
+            return ResponseEntity.noContent().build(); // Retorna 204 se não houver endereços
+        }
+        return ResponseEntity.ok(enderecos); // Retorna 200 com a lista de endereços
+    }
+
+    
+    @GetMapping("/{id}")
+    public ResponseEntity<Endereco> getEnderecoById(@PathVariable Integer id) {
+        Endereco endereco = enderecoService.buscarEnderecoPorId(id);
+        if (endereco == null) {
+            return ResponseEntity.notFound().build(); // Retorna 404 se o endereço não for encontrado
+        }
+        return ResponseEntity.ok(endereco); // Retorna 200 com o endereço encontrado
     }
 
     @PostMapping

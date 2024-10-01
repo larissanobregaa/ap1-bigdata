@@ -1,8 +1,13 @@
 package br.edu.ibmec.bigdata.controller;
 
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.Collections;
+import java.util.List;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 import br.edu.ibmec.bigdata.model.Endereco;
 import br.edu.ibmec.bigdata.service.EnderecoService;
@@ -64,4 +70,46 @@ public class EnderecoControllerTest {
                 .andExpect(jsonPath("$.message").value("Há erros na sua requisição, verique"));
     }
 
+    @Test
+    public void getAllEnderecos_quandoNaoExistemEnderecos_entaoRetornarNoContent() throws Exception {
+        when(enderecoService.buscarTodosEnderecos()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(get("/enderecos"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void getAllEnderecos_quandoExistemEnderecos_entaoRetornarOk() throws Exception {
+        when(enderecoService.buscarTodosEnderecos()).thenReturn(List.of(endereco));
+
+        mockMvc.perform(get("/enderecos"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].rua").value("Rua Teste"));
+    }
+
+    @Test
+    public void buscarEnderecoPorId_quandoIdExistente_entaoRetornarEndereco() throws Exception {
+        when(enderecoService.buscarEnderecoPorId(1)).thenReturn(endereco);
+
+        mockMvc.perform(get("/enderecos/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.rua").value("Rua Teste"));
+    }
+
+    @Test
+    public void buscarEnderecoPorId_quandoIdNaoExistente_entaoRetornarNotFound() throws Exception {
+        when(enderecoService.buscarEnderecoPorId(2)).thenReturn(null);
+
+        mockMvc.perform(get("/enderecos/2"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void removerEndereco_quandoIdNaoExistente_entaoLancarExcecao() throws Exception {
+        doThrow(new IllegalArgumentException("Endereço não encontrado.")).when(enderecoService).removerEndereco(1);
+
+    mockMvc.perform(delete("/enderecos/1")) 
+            .andExpect(status().isNotFound()) 
+            .andExpect(jsonPath("$.message").value("Endereço não encontrado.")); 
+    }
 }

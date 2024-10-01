@@ -17,6 +17,16 @@ public class EnderecoService {
     public EnderecoService(EnderecoRepository enderecoRepository){
         this.enderecoRepository = enderecoRepository;
     }
+    
+    public List<Endereco> buscarTodosEnderecos() {
+        return enderecoRepository.findAll();
+    }
+
+    public Endereco buscarEnderecoPorId(Integer id) {
+        return enderecoRepository.findById(id).orElse(null);
+    }
+
+    
     // Método para adicionar endereço
     public Endereco adicionarEndereco(@Valid Endereco endereco){
         if (enderecoJaExiste(endereco)) {

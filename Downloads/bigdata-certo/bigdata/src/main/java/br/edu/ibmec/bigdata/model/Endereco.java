@@ -17,7 +17,7 @@ import lombok.Data;
 public class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column
     @NotBlank(message = "Campo rua é obrigatório!")
